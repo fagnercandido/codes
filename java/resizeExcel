@@ -1,0 +1,24 @@
+public class ITextExcel {
+
+protected void redimensionarColunas() {
+	    int numberOfSheets = workbook.getNumberOfSheets();
+	    for (int i = 0; i < numberOfSheets; i++) {
+	        Sheet sheet = workbook.getSheetAt(i);
+	        if (sheet.getPhysicalNumberOfRows() > 0) {
+	        	for(int contador = 0; contador < sheet.getPhysicalNumberOfRows(); contador++) {
+		            Row row = sheet.getRow(contador);
+		            if(row != null) {
+			            Iterator<Cell> cellIterator = row.cellIterator();
+			            while (cellIterator.hasNext()) {
+			                Cell cell = cellIterator.next();
+			                int columnIndex = cell.getColumnIndex();
+			                sheet.autoSizeColumn(columnIndex);
+			            }
+		            }
+	        	}
+	        }
+	    }
+	}
+
+
+}
