@@ -1,0 +1,36 @@
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.List;
+
+public class ConversorObjectToClass {
+
+	public static <T> List<T> converter(List lista, Class<T> tipo) {
+		List<T> resultado = new LinkedList<>();
+		lista.forEach(item -> {
+			try {
+				resultado.add((T) criarVO((Object[]) item, tipo));
+			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		});
+		return resultado;
+	}
+
+	private static <T> T criarVO(Object[] item, Class<T> tipo)
+			throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
+		Constructor<T> construtor = tipo.getDeclaredConstructor(recuperarTiposConstrutor(item));
+		return construtor.newInstance(item);
+	}
+
+	private static Class[] recuperarTiposConstrutor(Object[] item) throws ClassNotFoundException {
+		Class[] typesConstructor = new Class[item.length];
+		for (int contador = 0; contador < item.length; contador++) {
+			typesConstructor[contador] = Class.forName(item[contador].getClass().getTypeName());
+		}
+		return typesConstructor;
+	}
+
+}
